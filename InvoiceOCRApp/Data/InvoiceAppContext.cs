@@ -45,10 +45,7 @@ public partial class InvoiceAppContext : DbContext
                 .HasPrecision(10, 2)
                 .HasColumnName("vat");
 
-            entity.HasMany(e => e.Invoicedetails)
-          .WithOne(e => e.Invoice)
-          .HasForeignKey(e => e.Invoiceid)
-          .OnDelete(DeleteBehavior.Cascade);
+            
         });
 
         modelBuilder.Entity<Invoicedetail>(entity =>
