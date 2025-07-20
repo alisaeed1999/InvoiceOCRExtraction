@@ -1,0 +1,59 @@
+<div class="container">
+  
+  <div class="content">
+    <div class="upload-container">
+      <div class="drop-zone" 
+           (dragover)="onDragOver($event)" 
+           (dragleave)="onDragLeave()" 
+           (drop)="onDrop($event)"
+           [class.dragover]="isDragging">
+        <mat-icon>cloud_upload</mat-icon>
+        <h3>Drag & Drop your invoice file</h3>
+        <p>Supported formats: PDF, JPG, JPEG, PNG</p>
+        <p>or</p>
+        
+        <input type="file" #fileInput (click) = "$event.stopPropagation();" (change)="onFileSelected($event)" hidden 
+               accept=".pdf,.jpg,.jpeg,.png" />
+        <button mat-raised-button color="primary" (click)="$event.stopPropagation(); fileInput.click()">
+          <mat-icon>file_upload</mat-icon> Select File
+        </button>
+        
+        <div *ngIf="selectedFile" class="file-name">
+          Selected: {{ selectedFile.name }}
+        </div>
+      </div>
+
+      <button mat-raised-button color="primary" 
+              class="upload-button"
+              (click)="$event.stopPropagation(); onUpload()" 
+              [disabled]="loading || !selectedFile">
+        <span *ngIf="!loading">Process Invoice</span>
+        <mat-spinner *ngIf="loading" diameter="20"></mat-spinner>
+      </button>
+
+      <div *ngIf="invoiceForm.get('manualEdit')?.value">
+        <app-edit-invoice
+          [invoiceForm]="invoiceForm"
+          [loading]="loading"
+          (submit)="onSubmit()"
+          (cancel)="invoiceForm.patchValue({ manualEdit: false })">
+        </app-edit-invoice>
+      </div>
+    </div>
+
+    <div class="history-preview" *ngIf="showHistoryPreview && historyInvoice">
+      <h3>History Preview</h3>
+      <div class="preview-card">
+        <p><strong>Invoice Number:</strong> {{ historyInvoice.invoiceNumber }}</p>
+        <p><strong>Date:</strong> {{ historyInvoice.invoiceDate | date }}</p>
+        <p><strong>Customer:</strong> {{ historyInvoice.customerName }}</p>
+        <p><strong>Total:</strong> {{ historyInvoice.totalAmount | currency }}</p>
+        
+        <!-- <button mat-raised-button color="primary" 
+                (click)="router.navigate(['/preview', historyInvoice.id])">
+          View Full Preview
+        </button> -->
+      </div>
+    </div>
+  </div>
+</div>

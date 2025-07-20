@@ -1,0 +1,211 @@
+<div class="template-selector">
+  <div class="template-carousel">
+    <div class="template-item" *ngFor="let template of templates; let i = index" (click)="selectTemplate(template.id)">
+      <img [src]="template.previewImage" alt="{{ template.name }}" />
+      <p>{{ template.name }}</p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="loading">
+  <mat-spinner diameter="30"></mat-spinner>
+  <p>Loading invoice...</p>
+</div>
+
+<div *ngIf="!loading && invoice" class="invoice-container" [class]="selectedTemplate" #invoiceContent>
+  <!-- Template 1 -->
+  <div class="invoice-template template-1" *ngIf="selectedTemplate === 'template1'">
+    <div class="invoice-header">
+      <div class="company-info">
+        <h2>INVOICE</h2>
+      </div>
+      <div class="invoice-info">
+        <h1>INVOICE</h1>
+        <p><strong>Invoice #:</strong> {{ invoice.invoiceNumber }}</p>
+        <p><strong>Date:</strong> {{ formattedDate }}</p>
+      </div>
+    </div>
+
+    <div class="invoice-to">
+      <h3>Bill To:</h3>
+      <p>{{ invoice.customerName }}</p>
+    </div>
+
+    <table class="invoice-table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th class="text-right">Qty</th>
+          <th class="text-right">Unit Price</th>
+          <th class="text-right">Line Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of invoice.items">
+          <td>{{ item.description }}</td>
+          <td class="text-right">{{ item.quantity }}</td>
+          <td class="text-right">{{ item.unitPrice | currency }}</td>
+          <td class="text-right">{{ item.lineTotal | currency }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="text-right"><strong>Subtotal</strong></td>
+          <td class="text-right">{{ subtotal | currency }}</td>
+        </tr>
+        <tr>
+          <td colspan="3" class="text-right"><strong>VAT</strong></td>
+          <td class="text-right">{{ invoice.vat | currency }}</td>
+        </tr>
+        <tr>
+          <td colspan="3" class="text-right"><strong>Total</strong></td>
+          <td class="text-right">{{ total | currency }}</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="invoice-footer">
+      <p>Thank you for your business!</p>
+    </div>
+
+  </div>
+
+  <!-- Template 2 (can be styled differently) -->
+   
+  <div class="invoice-template template-2" *ngIf="selectedTemplate === 'template2'">
+     <div class="templid-invoice">
+      <header>
+        <h1>Invoice</h1>
+        <p><strong>Invoice Number:</strong> {{ invoice.invoiceNumber }}</p>
+        <p><strong>Date:</strong> {{ formattedDate }}</p>
+      </header>
+      <section>
+        <h2>Billing To</h2>
+        <p>{{ invoice.customerName }}</p>
+      </section>
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of invoice.items">
+            <td>{{ item.description }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.unitPrice | currency }}</td>
+            <td>{{ item.lineTotal | currency }}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="3">Subtotal:</td>
+            <td>{{ subtotal | currency }}</td>
+          </tr>
+          <tr>
+            <td colspan="3">VAT:</td>
+            <td>{{ invoice.vat | currency }}</td>
+          </tr>
+          <tr>
+            <td colspan="3">Total:</td>
+            <td>{{ total | currency }}</td>
+          </tr>
+        </tfoot>
+      </table>
+      <footer>
+        <p>Thank you for your business!</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Template 3 -->
+ <div class="invoice-template template-3" *ngIf="selectedTemplate === 'template3'">
+  <div class="templid-invoice">
+    <!-- Header Section -->
+    <header>
+      <h1>INVOICE</h1>
+    </header>
+
+    <!-- Company Details -->
+    <section class="company-details">
+      <div class="supplier">
+        <p>{{ invoice.customerName }}</p>
+      </div>
+      <div class="invoice-info">
+        <div class="info-item">
+          <label>Invoice #:</label>
+          <input type="text" value="{{ invoice.invoiceNumber }}" readonly />
+        </div>
+        <div class="info-item">
+          <label>Date:</label>
+          <input type="text" value="{{ formattedDate }}" readonly />
+        </div>
+        <div class="info-item">
+          <label>Total:</label>
+          <input type="text" value="{{ total | currency }}" readonly />
+        </div>
+      </div>
+    </section>
+
+    <!-- Invoice Items Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Rate</th>
+          <th>Quantity</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of invoice.items">
+          
+          <td>{{ item.description }}</td>
+          <td>{{ item.unitPrice | currency }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.lineTotal | currency }}</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4">Sub Total:</td>
+          <td>{{ subtotal | currency }}</td>
+        </tr>
+        <tr>
+          <td colspan="4">VAT:</td>
+          <td>{{invoice.vat | currency}}</td>
+        </tr>
+        <tr>
+          <td colspan="4">Total:</td>
+          <td>{{ total | currency }}</td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <!-- Additional Notes -->
+    <section class="additional-notes">
+      <h3>ADDITIONAL NOTES</h3>
+      <p>A finance charge of 1.5% will be made on unpaid balances after 30 days.</p>
+    </section>
+
+    <!-- Buttons -->
+    
+  </div>
+</div>
+
+  <!-- Action Buttons -->
+  <div class="actions">
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" [routerLink] = "['']">Upload Invoice</button>
+      <button mat-button (click)="printInvoice()" color="primary">
+        <mat-icon>print</mat-icon> Print
+      </button>
+      <button mat-button (click)="exportToPDF()" color="accent">
+        <mat-icon>picture_as_pdf</mat-icon> Export to PDF
+      </button>
+    </mat-card-actions>
+  </div>
+</div>

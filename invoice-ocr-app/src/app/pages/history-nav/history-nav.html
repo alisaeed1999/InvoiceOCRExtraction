@@ -1,0 +1,12 @@
+
+    <mat-nav-list class="history-nav">
+       <div *ngIf="invoices.length === 0" class="no-invoices">
+    <p *ngIf="!loading">No invoices found.</p>
+    <p *ngIf="loading">Loading invoices...</p>
+  </div>
+      <mat-list-item *ngFor="let invoice of invoices" (click)="selectInvoice(invoice)" style="cursor: pointer;">
+        <mat-icon matListIcon>history</mat-icon>
+        <h4 matLine>INVOICE {{invoice.invoiceNumber}}-{{ invoice.invoiceDate?.toString() }}</h4>
+      </mat-list-item>
+    </mat-nav-list>
+ 

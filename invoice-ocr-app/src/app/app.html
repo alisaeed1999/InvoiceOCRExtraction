@@ -1,0 +1,25 @@
+<mat-sidenav-container
+  autosize
+  class="app-container"
+  (backdropClick)="showHistory = false">
+  <mat-sidenav
+    #sidenav
+    mode="side"
+    [(opened)]="showHistory"
+    class="history-nav"
+    (backdropClick)="showHistory = false">
+    <app-history-nav
+      [invoices]="invoices"
+      [opened] = "showHistory"
+      (invoiceSelected)="onInvoiceSelected($event)">
+    </app-history-nav>
+  </mat-sidenav>
+
+  <mat-sidenav-content (click)="showHistory = false">
+    <app-header (toggleHistory)="sidenav.toggle()"></app-header>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+    <app-footer></app-footer>
+  </mat-sidenav-content>
+</mat-sidenav-container>

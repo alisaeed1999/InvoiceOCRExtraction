@@ -1,0 +1,79 @@
+.invoice-edit-card {
+  max-width: 900px;
+  margin: 20px auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.section-title {
+  margin: 0 0 10px 0;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.full-width {
+  flex: 1 1 100%;
+}
+
+.flex-1 {
+  flex: 1 1 45%;
+}
+
+.items-section {
+  margin-top: 10px;
+}
+
+.item-row {
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+.item-fields {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 60px;
+  gap: 10px;
+  align-items: center;
+}
+
+.description-field {
+  grid-column: span 1;
+}
+
+.quantity-field,
+.price-field,
+.total-field {
+  grid-column: span 1;
+}
+
+.delete-btn {
+  grid-column: span 1;
+  align-self: center;
+  justify-self: center;
+}
+
+.add-item-row {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.add-item-btn {
+  font-weight: 500;
+}
+
+.actions {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
