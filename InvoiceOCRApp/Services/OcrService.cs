@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -165,8 +165,10 @@ public class OcrService : IOcrService, IDisposable
                 FileName = "tesseract",
                 Arguments = $"\"{imagePath}\" \"{outputPath}\" -l eng {config}",
                 RedirectStandardError = true,
+                RedirectStandardOutput = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                Environment = { { "TESSDATA_PREFIX", "/usr/share/tesseract-ocr/5/tessdata" } }
             }
         };
 
@@ -174,11 +176,29 @@ public class OcrService : IOcrService, IDisposable
 
         process.Start();
         string stderr = await process.StandardError.ReadToEndAsync();
+        string stdout = await process.StandardOutput.ReadToEndAsync();
         await process.WaitForExitAsync();
+
+        // Log parameter file warnings at debug level instead of error level
+        if (stderr.Contains("read_params_file: Can't open"))
+        {
+            _logger.LogDebug($"Tesseract parameter file warnings (non-critical): {stderr}");
+        }
+
+        // Filter out parameter file warnings that are not critical
+        var filteredErrors = stderr.Split('\n')
+            .Where(line => !line.Contains("read_params_file: Can't open") && 
+                          !line.Contains("Tesseract CLI warning:") &&
+                          !string.IsNullOrWhiteSpace(line))
+            .ToArray();
 
         if (process.ExitCode != 0 || !File.Exists(outputTextFile))
         {
-            throw new Exception($"Tesseract CLI failed: {stderr}");
+            // Only throw if there are actual critical errors, not just parameter file warnings
+            if (filteredErrors.Any() && !stderr.Contains("read_params_file"))
+            {
+                throw new Exception($"Tesseract CLI failed: {string.Join("\n", filteredErrors)}");
+            }
         }
 
         string result = await File.ReadAllTextAsync(outputTextFile);
@@ -748,18 +768,38 @@ public class OcrService : IOcrService, IDisposable
                 FileName = "tesseract",
                 Arguments = $"\"{imagePath}\" \"{outputHocrPath}\" -l eng hocr",
                 RedirectStandardError = true,
+                RedirectStandardOutput = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                Environment = { { "TESSDATA_PREFIX", "/usr/share/tesseract-ocr/5/tessdata" } }
             }
         };
 
         process.Start();
         string stderr = await process.StandardError.ReadToEndAsync();
+        string stdout = await process.StandardOutput.ReadToEndAsync();
         await process.WaitForExitAsync();
+
+        // Log parameter file warnings at debug level instead of error level
+        if (stderr.Contains("read_params_file: Can't open"))
+        {
+            _logger.LogDebug($"Tesseract parameter file warnings (non-critical): {stderr}");
+        }
+
+        // Filter out parameter file warnings that are not critical
+        var filteredErrors = stderr.Split('\n')
+            .Where(line => !line.Contains("read_params_file: Can't open") && 
+                          !line.Contains("Tesseract CLI warning:") &&
+                          !string.IsNullOrWhiteSpace(line))
+            .ToArray();
 
         if (process.ExitCode != 0 || !File.Exists(outputHocrFile))
         {
-            throw new Exception($"Tesseract CLI failed: {stderr}");
+            // Only throw if there are actual critical errors, not just parameter file warnings
+            if (filteredErrors.Any() && !stderr.Contains("read_params_file"))
+            {
+                throw new Exception($"Tesseract CLI failed: {string.Join("\n", filteredErrors)}");
+            }
         }
 
         string hocrText = await File.ReadAllTextAsync(outputHocrFile);
